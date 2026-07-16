@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Fix for sandboxed iframe environments where window.fetch is a read-only getter.
+      // Defining it with both a getter and a setter allows polyfills or browser/extension libraries to patch it safely.
+      (function() {
+        try {
+          const originalFetch = window.fetch;
+          try { delete window.fetch; } catch (e) {}
+          let customFetch = originalFetch;
+          Object.defineProperty(window, 'fetch', {
+            get() { return customFetch; },
+            set(v) { customFetch = v; },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          try {
+            const originalFetch = Window.prototype.fetch;
+            try { delete Window.prototype.fetch; } catch (err) {}
+            let customFetch = originalFetch;
+            Object.defineProperty(Window.prototype, 'fetch', {
+              get() { return customFetch; },
+              set(v) { customFetch = v; },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (err) {
+            console.warn("Unable to patch fetch for writable access", err);
+          }
+        }
+      })();
+    </script>
+    <title>HKBK Core Java Trainer | Department of CSE</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

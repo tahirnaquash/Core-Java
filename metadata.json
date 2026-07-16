@@ -1,0 +1,6 @@
+{
+  "name": "HKBK Java Training App",
+  "description": "An offline-first Core Java training program featuring interactive quizzes, coding exercises, and progress tracking, custom-built for HKBK College of Engineering by the Department of CSE.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
