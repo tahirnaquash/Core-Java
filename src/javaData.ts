@@ -333,7 +333,7 @@ public class ParkingFee {
             "Rs. 180 before, Rs. 180 after",
             "Rs. 200 before, Rs. 200 after"
           ],
-          correctIndex: 1,
+          correctIndex: 0,
           explanation: "8 hours fee: (2 * 30) + (3 * 20) + (3 * 10) = 60 + 60 + 30 = Rs. 150. Wait! Let's check: (2*30)=60, (3*20)=60, remaining 3 hours (8-5) * 10 = 30. Total = 150. Since 150 is less than 200, it stays 150. Ah, let's recalculate for 20 hours: 2*30 + 3*20 + 15*10 = 270, capped at 200. For the option, wait! Let's make sure the question option corresponds to an amount that triggers the cap! If hours = 20, fee is 270 before, capped to 200."
         }
       },
