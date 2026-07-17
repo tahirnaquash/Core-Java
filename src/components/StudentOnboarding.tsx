@@ -144,7 +144,7 @@ export default function StudentOnboarding({ onLoginSuccess }: StudentOnboardingP
       </div>
 
       {/* Middle Login Card */}
-      <div className="max-w-md w-full mx-auto my-auto py-10 z-10">
+      <div className="max-w-4xl w-full mx-auto my-auto py-10 z-10 px-4">
         <div className="text-center mb-8 space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mb-2">
             <ShieldCheck className="h-3.5 w-3.5" />
@@ -152,55 +152,57 @@ export default function StudentOnboarding({ onLoginSuccess }: StudentOnboardingP
               Secure Laboratory Session Gate
             </span>
           </div>
-          <h1 className="font-sans text-2xl font-black text-white tracking-tight uppercase">
+          <h1 className="font-sans text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
             Core Java Lab Trainer
           </h1>
-          <p className="font-sans text-xs text-slate-400 leading-relaxed font-medium">
+          <p className="font-sans text-xs sm:text-sm text-slate-400 leading-relaxed font-medium max-w-2xl mx-auto">
             Department of Computer Science & Engineering. Enter your name and VTU University Seat Number to load or start your session records.
           </p>
         </div>
 
         {/* Form Container */}
-        <div className="bg-slate-800/80 border-2 border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-md">
-          <form onSubmit={handleSubmit} className="space-y-5" id="form-onboarding-student">
+        <div className="bg-slate-800/80 border-2 border-slate-700/50 rounded-3xl p-6 sm:p-10 md:p-12 shadow-xl backdrop-blur-md">
+          <form onSubmit={handleSubmit} className="space-y-6" id="form-onboarding-student">
             
-            {/* Name Input */}
-            <div className="space-y-1.5">
-              <label className="font-sans text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                Student Full Name
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <User className="h-4 w-4" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name Input */}
+              <div className="space-y-1.5">
+                <label className="font-sans text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                  Student Full Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                    <User className="h-4 w-4" />
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g., Tahir Ahmed"
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl pl-10 pr-4 py-3.5 text-xs text-white placeholder-slate-500 font-sans font-bold focus:border-indigo-500 focus:outline-none transition-colors"
+                  />
                 </div>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Tahir Ahmed"
-                  className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl pl-10 pr-4 py-3 text-xs text-white placeholder-slate-500 font-sans font-bold focus:border-indigo-500 focus:outline-none transition-colors"
-                />
               </div>
-            </div>
 
-            {/* USN Input */}
-            <div className="space-y-1.5">
-              <label className="font-sans text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                University Seat Number (VTU USN)
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <GraduationCap className="h-4 w-4" />
+              {/* USN Input */}
+              <div className="space-y-1.5">
+                <label className="font-sans text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                  University Seat Number (VTU USN)
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                    <GraduationCap className="h-4 w-4" />
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    value={usn}
+                    onChange={(e) => setUsn(e.target.value)}
+                    placeholder="e.g., 1HK22CS045"
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl pl-10 pr-4 py-3.5 text-xs text-white placeholder-slate-500 font-mono font-black tracking-widest uppercase focus:border-indigo-500 focus:outline-none transition-colors"
+                  />
                 </div>
-                <input
-                  type="text"
-                  required
-                  value={usn}
-                  onChange={(e) => setUsn(e.target.value)}
-                  placeholder="e.g., 1HK22CS045"
-                  className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl pl-10 pr-4 py-3 text-xs text-white placeholder-slate-500 font-mono font-black tracking-widest uppercase focus:border-indigo-500 focus:outline-none transition-colors"
-                />
               </div>
             </div>
 
@@ -246,7 +248,7 @@ export default function StudentOnboarding({ onLoginSuccess }: StudentOnboardingP
       </div>
 
       {/* Footer bar */}
-      <div className="border-t border-slate-800/80 pt-4 text-center z-10">
+      <div className="border-t border-slate-500/50 pt-4 text-center z-10">
         <p className="font-sans text-[10px] text-slate-500 uppercase tracking-widest font-black">
           Department of Computer Science & Engineering • HKBKCE
         </p>

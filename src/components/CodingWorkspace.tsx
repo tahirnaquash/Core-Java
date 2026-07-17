@@ -245,7 +245,7 @@ export default function CodingWorkspace({
   onNext,
   onPrev,
 }: CodingWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<"playground" | "solution" | "quiz">("playground");
+  const [activeTab, setActiveTab] = useState<"playground" | "quiz">("playground");
   const [copied, setCopied] = useState(false);
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [terminalOutput, setTerminalOutput] = useState<string>("");
@@ -387,17 +387,6 @@ export default function CodingWorkspace({
           💻 Interactive IDE
         </button>
         <button
-          onClick={() => setActiveTab("solution")}
-          className={`flex-1 py-2.5 text-center rounded-2xl transition-all font-black uppercase tracking-widest text-[10px] sm:text-xs border-2 ${
-            activeTab === "solution"
-              ? "bg-indigo-600 text-white border-indigo-500 shadow-md"
-              : "border-transparent text-slate-500 hover:bg-white/50"
-          }`}
-          id="tab-solution"
-        >
-          📄 Source Solution
-        </button>
-        <button
           onClick={() => setActiveTab("quiz")}
           className={`flex-1 py-2.5 text-center rounded-2xl transition-all font-black uppercase tracking-widest text-[10px] sm:text-xs border-2 ${
             activeTab === "quiz"
@@ -441,7 +430,7 @@ export default function CodingWorkspace({
               </div>
 
               {/* Textarea Code Box */}
-              <div className="flex-1 min-h-[320px] flex flex-col rounded-2xl border-2 border-slate-200 overflow-hidden bg-slate-950 font-mono text-xs shadow-inner">
+              <div className="flex-1 lg:min-h-[460px] min-h-[320px] flex flex-col rounded-2xl border-2 border-slate-200 overflow-hidden bg-slate-950 font-mono text-xs shadow-inner">
                 <div className="bg-slate-900 px-4 py-2 border-b border-slate-800 flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-wider">
                   <span>{problem.title.replace(/\s+/g, "")}.java</span>
                   <span className="text-indigo-400 font-black uppercase tracking-widest">Interactive IDE</span>
@@ -493,7 +482,7 @@ export default function CodingWorkspace({
               </div>
 
               {/* Console Output Screen */}
-              <div className="flex-1 flex flex-col rounded-2xl bg-slate-900 border-4 border-slate-950 overflow-hidden shadow-lg min-h-[250px]">
+              <div className="flex-1 flex flex-col rounded-2xl bg-slate-900 border-4 border-slate-950 overflow-hidden shadow-lg lg:min-h-[380px] min-h-[250px]">
                 <div className="bg-slate-950 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between shrink-0">
                   <span className="font-mono text-[10px] text-slate-400 font-bold flex items-center gap-1.5 uppercase tracking-widest">
                     <Terminal className="h-3.5 w-3.5 text-indigo-400" />
@@ -529,111 +518,7 @@ export default function CodingWorkspace({
           </div>
         )}
 
-        {/* SOLUTION TAB */}
-        {activeTab === "solution" && (
-          <div className="space-y-5 animate-fadeIn" id="solution-content">
-            {(!unlockedSolutions[problem.id] && !isCompleted) ? (
-              <div className="rounded-3xl border-4 border-amber-100 bg-amber-50/20 p-8 text-center space-y-5 max-w-2xl mx-auto my-6" id="solution-locked-card">
-                <div className="mx-auto h-16 w-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center border-4 border-amber-200 shadow-sm animate-pulse">
-                  <Lock className="h-8 w-8 text-amber-600" />
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-sans text-base font-black text-amber-900 uppercase tracking-wide">
-                    Syllabus Reference Solution Hidden
-                  </h4>
-                  <p className="font-sans text-xs text-amber-800 leading-relaxed max-w-md mx-auto font-semibold">
-                    To maximize your learning in the Core Java syllabus, we highly recommend typing and testing your solution first inside the 💻 Interactive IDE.
-                  </p>
-                </div>
-                <div className="pt-2">
-                  <button
-                    onClick={() => setUnlockedSolutions(prev => ({ ...prev, [problem.id]: true }))}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 text-xs font-black uppercase tracking-widest shadow-md transition-all active:translate-y-0.5 animate-bounce"
-                    id="btn-unlock-solution"
-                  >
-                    <Unlock className="h-4 w-4" />
-                    <span>Reveal Reference Solution</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div className="space-y-1">
-                    <h4 className="font-sans text-xs font-black text-indigo-900 uppercase tracking-widest">
-                      Source Code Solution
-                    </h4>
-                    <p className="font-sans text-[11px] text-slate-400 font-bold uppercase tracking-wider">
-                      Review the full, compiled standard solution as documented in the syllabus.
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleCopyCode}
-                    id="btn-copy-solution"
-                    className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-indigo-700 bg-indigo-50 border-2 border-indigo-150 px-3.5 py-2 rounded-xl hover:bg-indigo-100 transition-colors"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3.5 w-3.5" />
-                        <span>Copy Code</span>
-                      </>
-                    )}
-                  </button>
-                </div>
 
-                {/* Code Block display */}
-                <div className="relative rounded-2xl bg-slate-50 border-2 border-slate-150 overflow-hidden font-mono text-xs max-h-[400px] overflow-y-auto shadow-inner">
-                  <div className="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                    <span>Java Source File • {problem.title.replace(/\s+/g, "")}.java</span>
-                    <span>UTF-8</span>
-                  </div>
-                  <table className="w-full border-collapse">
-                    <tbody>
-                      {problem.solutionCode.split("\n").map((line, i) => (
-                        <tr key={i} className="hover:bg-indigo-50/20">
-                          <td className="w-10 text-right pr-3 pl-2 select-none border-r border-slate-200 text-[10px] text-slate-400 font-mono bg-slate-100/50 py-0.5">
-                            {i + 1}
-                          </td>
-                          <td className="pl-4 font-mono text-xs text-slate-800 py-0.5 select-text whitespace-pre">
-                            {line}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Explanation card */}
-                <div className="rounded-3xl border-4 border-indigo-50 bg-indigo-50/20 p-5 space-y-3">
-                  <h5 className="font-sans text-xs font-black text-indigo-950 uppercase tracking-widest flex items-center gap-1.5">
-                    <Lightbulb className="h-4 w-4 text-indigo-600" />
-                    Line-by-Line Code Explanation
-                  </h5>
-                  <p className="font-sans text-xs text-indigo-900 leading-relaxed font-semibold">
-                    {problem.explanation}
-                  </p>
-                  <div className="pt-2">
-                    <span className="text-[10px] font-mono text-indigo-800 font-black uppercase tracking-widest block mb-1.5">
-                      CONCEPTS LEARNED:
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {problem.concepts.map((concept, idx) => (
-                        <span key={idx} className="font-mono text-[9px] bg-white text-indigo-800 px-2.5 py-1 rounded-full border-2 border-indigo-100 font-bold uppercase tracking-wide">
-                          {concept}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        )}
 
         {/* QUIZ TAB */}
         {activeTab === "quiz" && (
