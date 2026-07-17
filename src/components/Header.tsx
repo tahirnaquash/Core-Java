@@ -58,7 +58,7 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-indigo-600 text-white shadow-lg shrink-0 print:hidden" id="app-header">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-none w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex h-20 items-center justify-between">
           {/* Logo and Brand */}
           <div className="flex items-center gap-4">

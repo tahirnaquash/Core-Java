@@ -40,7 +40,7 @@ export default function Dashboard({
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8" id="dashboard-container">
+    <div className="mx-auto max-w-none w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8 space-y-8" id="dashboard-container">
       {/* Welcome Hero Card */}
       <div className="relative overflow-hidden rounded-3xl bg-indigo-600 p-8 shadow-xl border-4 border-indigo-100 text-white" id="welcome-hero">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">

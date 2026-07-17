@@ -67,7 +67,7 @@ export default function SessionView({
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:h-[calc(100vh-130px)] lg:min-h-[850px] min-h-[600px] flex flex-col" id="session-view-container">
+    <div className="mx-auto max-w-none w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-6 lg:h-[calc(100vh-130px)] lg:min-h-[850px] min-h-[600px] flex flex-col" id="session-view-container">
       {/* Session Selection Tab Bar */}
       <div className="flex border-4 border-indigo-50 text-xs sm:text-sm font-bold overflow-x-auto whitespace-nowrap bg-white rounded-3xl shadow-md p-2 gap-2 select-none scrollbar-none" id="session-tabs">
         {JAVA_SESSIONS.map((s) => {
@@ -100,7 +100,7 @@ export default function SessionView({
       </div>
 
       {/* Main split grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 overflow-hidden" id="workspace-layout">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6 overflow-hidden" id="workspace-layout">
         {/* Left Side Menu List (Syllabus summary & problems list) */}
         <div className={`lg:col-span-1 flex flex-col space-y-4 overflow-y-auto pr-1 ${mobileView === "problem" ? "hidden lg:flex" : "flex"}`} id="left-sidebar-menu">
           {/* Selected Session Info Card */}
@@ -173,7 +173,7 @@ export default function SessionView({
         </div>
 
         {/* Right Side Coding Workspace */}
-        <div className={`lg:col-span-2 h-full flex flex-col overflow-hidden ${mobileView === "list" ? "hidden lg:flex" : "flex"}`} id="right-workspace-area">
+        <div className={`lg:col-span-3 h-full flex flex-col overflow-hidden ${mobileView === "list" ? "hidden lg:flex" : "flex"}`} id="right-workspace-area">
           {/* Mobile Back Button */}
           <div className="lg:hidden mb-3">
             <button

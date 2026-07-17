@@ -60,7 +60,7 @@ export default function FacultyConsole() {
     : 0;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8" id="faculty-console">
+    <div className="mx-auto max-w-none w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8 space-y-8" id="faculty-console">
       {/* Top Banner */}
       <div className="bg-indigo-950 text-white rounded-3xl p-6 sm:p-8 border border-indigo-900 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.25),transparent_60%)] pointer-events-none" />
