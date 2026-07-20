@@ -52,9 +52,7 @@ export default function QuizDeck({ completedQuizzes, onCompleteQuiz }: QuizDeckP
     if (isLast) {
       setQuizFinished(true);
       if (activeSessionNum !== null) {
-        // Record final score (correctCount is updated by state, but since setCorrectCount is async, we calculate true final correct value)
-        const finalScore = correctCount + (selectedOption === questionsList[currentQuestionIndex].quiz.correctIndex ? 1 : 0);
-        onCompleteQuiz(activeSessionNum, finalScore);
+        onCompleteQuiz(activeSessionNum, correctCount);
       }
     } else {
       setCurrentQuestionIndex((prev) => prev + 1);

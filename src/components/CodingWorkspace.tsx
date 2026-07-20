@@ -22,47 +22,20 @@ interface CodingWorkspaceProps {
 
 // Generate a clean starter skeleton code from the full solution
 function getSkeletonCode(problem: JavaProblem): string {
-  const lines = problem.solutionCode.split("\n");
-  const result: string[] = [];
-  let insideMain = false;
-  let mainBraceCount = 0;
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.includes("public static void main")) {
-      result.push(line);
-      insideMain = true;
-      mainBraceCount = 1;
-      // If the next line is Scanner initialization, keep it
-      if (i + 1 < lines.length && lines[i + 1].includes("Scanner sc")) {
-        result.push(lines[i + 1]);
-        i++;
-      }
-      result.push("        // TODO: Write your Java code here to solve the question");
-      result.push(`        // Question: ${problem.question}`);
-      result.push("");
-      continue;
+  const match = problem.solutionCode.match(/public\s+class\s+(\w+)/) || problem.solutionCode.match(/class\s+(\w+)/);
+  const className = match ? match[1] : "Solution";
+
+  return `import java.util.Scanner;
+
+public class ${className} {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        // TODO: Write your Java code here to solve the question
+        // Question: ${problem.question}
+
+        sc.close();
     }
-    
-    if (insideMain) {
-      // Track braces to find the end of the main method
-      for (const char of line) {
-        if (char === "{") mainBraceCount++;
-        if (char === "}") mainBraceCount--;
-      }
-      if (mainBraceCount <= 0) {
-        insideMain = false;
-        // Keep scanner close if present
-        if (problem.solutionCode.includes("sc.close()")) {
-          result.push("        sc.close();");
-        }
-        result.push("    }");
-      }
-    } else {
-      result.push(line);
-    }
-  }
-  return result.join("\n");
+}`;
 }
 
 interface ValidationResult {
