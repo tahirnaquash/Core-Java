@@ -298,6 +298,8 @@ export default function App() {
             completedProblems={completedProblems}
             completedQuizzes={completedQuizzes}
             setCurrentTab={setCurrentTab}
+            studentName={studentName || ""}
+            studentUsn={studentUsn || ""}
           />
         )}
 
