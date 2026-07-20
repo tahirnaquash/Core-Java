@@ -27,9 +27,14 @@ function getExcelData(): any[] {
       "CompletedProblemsList",
       "CompletedQuizzesCount",
       "CompletedQuizzesList",
+      "CodingMarks",
+      "QuizMarks",
+      "TotalMarks",
+      "Grade",
       "CertificateEarned",
       "LastActiveDate",
-      "RegistrationTime"
+      "RegistrationTime",
+      "SubmittedCodes"
     ]], { origin: "A1" });
     XLSX.writeFile(wb, EXCEL_FILE);
     return [];
@@ -59,13 +64,35 @@ function saveExcelData(data: any[]) {
       "CompletedProblemsList",
       "CompletedQuizzesCount",
       "CompletedQuizzesList",
+      "CodingMarks",
+      "QuizMarks",
+      "TotalMarks",
+      "Grade",
       "CertificateEarned",
       "LastActiveDate",
-      "RegistrationTime"
+      "RegistrationTime",
+      "SubmittedCodes"
     ]
   });
   XLSX.utils.book_append_sheet(wb, ws, "Student Progress");
   XLSX.writeFile(wb, EXCEL_FILE);
+}
+
+// Helper to calculate coding marks based on problem difficulty tags in their ID
+function calculateCodingMarks(completedProblemsListStr: string): number {
+  if (!completedProblemsListStr) return 0;
+  const problems = completedProblemsListStr.split(",").filter(Boolean);
+  let total = 0;
+  for (const pid of problems) {
+    if (pid.includes("_e")) {
+      total += 10; // Easy = 10 Marks
+    } else if (pid.includes("_m")) {
+      total += 15; // Medium = 15 Marks
+    } else if (pid.includes("_h")) {
+      total += 20; // Hard = 20 Marks
+    }
+  }
+  return total;
 }
 
 // API Endpoints
@@ -109,12 +136,22 @@ app.post("/api/students/login", (req: express.Request, res: express.Response) =>
       }
     }
 
+    let userCodes: Record<string, string> = {};
+    if (student.SubmittedCodes) {
+      try {
+        userCodes = JSON.parse(student.SubmittedCodes);
+      } catch (e) {
+        userCodes = {};
+      }
+    }
+
     res.json({
       usn: normalizedUsn,
       name: normalizedName,
       streak: Number(student.Streak) || 1,
       completedProblems,
       completedQuizzes,
+      userCodes,
       message: "Welcome back! Your progression has been synchronized from the local Excel database."
     });
   } else {
@@ -128,9 +165,14 @@ app.post("/api/students/login", (req: express.Request, res: express.Response) =>
       CompletedProblemsList: "",
       CompletedQuizzesCount: 0,
       CompletedQuizzesList: "{}",
+      CodingMarks: 0,
+      QuizMarks: 0,
+      TotalMarks: 0,
+      Grade: "F",
       CertificateEarned: "No",
       LastActiveDate: todayStr,
-      RegistrationTime: new Date().toISOString()
+      RegistrationTime: new Date().toISOString(),
+      SubmittedCodes: "{}"
     };
 
     students.push(newStudent);
@@ -142,6 +184,7 @@ app.post("/api/students/login", (req: express.Request, res: express.Response) =>
       streak: 1,
       completedProblems: [],
       completedQuizzes: {},
+      userCodes: {},
       message: "Registration successful! A new record has been created in the local server excel spreadsheet."
     });
   }
@@ -149,7 +192,7 @@ app.post("/api/students/login", (req: express.Request, res: express.Response) =>
 
 // 2. Save Progress
 app.post("/api/students/progress", (req: express.Request, res: express.Response) => {
-  const { usn, name, streak, completedProblems, completedQuizzes, certificateEarned } = req.body;
+  const { usn, name, streak, completedProblems, completedQuizzes, certificateEarned, userCodes } = req.body;
   if (!usn) {
     res.status(400).json({ error: "USN is required" });
     return;
@@ -164,6 +207,45 @@ app.post("/api/students/progress", (req: express.Request, res: express.Response)
   const listStr = Array.isArray(completedProblems) ? completedProblems.join(",") : "";
   const quizzesStr = completedQuizzes ? JSON.stringify(completedQuizzes) : "{}";
 
+  // Calculate detailed grades and scores
+  const codingMarks = calculateCodingMarks(listStr);
+  let quizMarks = 0;
+  if (completedQuizzes) {
+    for (const key of Object.keys(completedQuizzes)) {
+      quizMarks += (Number(completedQuizzes[key]) || 0) * 2; // 2 marks per correct answer
+    }
+  }
+
+  const totalMarks = codingMarks + quizMarks;
+  const pct = (totalMarks / 500) * 100;
+  let grade = "F";
+  if (pct >= 90) grade = "S";
+  else if (pct >= 80) grade = "A";
+  else if (pct >= 70) grade = "B";
+  else if (pct >= 60) grade = "C";
+  else if (pct >= 50) grade = "D";
+
+  const submittedCodesStr = userCodes ? JSON.stringify(userCodes) : "{}";
+
+  // Write physical .java files to server directory for instructors to verify directly
+  if (userCodes) {
+    try {
+      const subDir = path.join(process.cwd(), "submissions", normalizedUsn);
+      if (!fs.existsSync(subDir)) {
+        fs.mkdirSync(subDir, { recursive: true });
+      }
+      for (const [probId, codeText] of Object.entries(userCodes)) {
+        if (codeText && typeof codeText === "string") {
+          const match = codeText.match(/public\s+class\s+(\w+)/) || codeText.match(/class\s+(\w+)/);
+          const className = match ? match[1] : probId;
+          fs.writeFileSync(path.join(subDir, `${className}.java`), codeText);
+        }
+      }
+    } catch (err) {
+      console.error("Error writing submissions to disk:", err);
+    }
+  }
+
   if (studentIndex >= 0) {
     // Update existing
     students[studentIndex].Streak = Number(streak) || 1;
@@ -171,8 +253,13 @@ app.post("/api/students/progress", (req: express.Request, res: express.Response)
     students[studentIndex].CompletedProblemsList = listStr;
     students[studentIndex].CompletedQuizzesCount = completedQuizzes ? Object.keys(completedQuizzes).length : 0;
     students[studentIndex].CompletedQuizzesList = quizzesStr;
+    students[studentIndex].CodingMarks = codingMarks;
+    students[studentIndex].QuizMarks = quizMarks;
+    students[studentIndex].TotalMarks = totalMarks;
+    students[studentIndex].Grade = grade;
     students[studentIndex].CertificateEarned = certificateEarned ? "Yes" : "No";
     students[studentIndex].LastActiveDate = todayStr;
+    students[studentIndex].SubmittedCodes = submittedCodesStr;
   } else {
     // Fallback registration
     const newStudent = {
@@ -183,15 +270,20 @@ app.post("/api/students/progress", (req: express.Request, res: express.Response)
       CompletedProblemsList: listStr,
       CompletedQuizzesCount: completedQuizzes ? Object.keys(completedQuizzes).length : 0,
       CompletedQuizzesList: quizzesStr,
+      CodingMarks: codingMarks,
+      QuizMarks: quizMarks,
+      TotalMarks: totalMarks,
+      Grade: grade,
       CertificateEarned: certificateEarned ? "Yes" : "No",
       LastActiveDate: todayStr,
-      RegistrationTime: new Date().toISOString()
+      RegistrationTime: new Date().toISOString(),
+      SubmittedCodes: submittedCodesStr
     };
     students.push(newStudent);
   }
 
   saveExcelData(students);
-  res.json({ status: "success", message: "Progress synchronized with Excel database." });
+  res.json({ status: "success", message: "Progress and grades synchronized with Excel database." });
 });
 
 // 3. Admin: Get all student records

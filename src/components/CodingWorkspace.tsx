@@ -18,6 +18,8 @@ interface CodingWorkspaceProps {
   toggleCompleted: (id: string) => void;
   onNext: () => void;
   onPrev: () => void;
+  userCodes: Record<string, string>;
+  saveUserCode: (id: string, code: string) => void;
 }
 
 // Generate a clean starter skeleton code from the full solution
@@ -217,6 +219,8 @@ export default function CodingWorkspace({
   toggleCompleted,
   onNext,
   onPrev,
+  userCodes,
+  saveUserCode,
 }: CodingWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<"playground" | "quiz">("playground");
   const [copied, setCopied] = useState(false);
@@ -238,9 +242,15 @@ export default function CodingWorkspace({
     });
     setInputs(defaultVals);
     
-    // Generate the starter skeleton for the new problem
-    const skeleton = getSkeletonCode(problem);
-    setUserCode(skeleton);
+    // Check if we have saved code, otherwise generate starter skeleton
+    const savedCode = userCodes[problem.id];
+    if (savedCode) {
+      setUserCode(savedCode);
+    } else {
+      const skeleton = getSkeletonCode(problem);
+      setUserCode(skeleton);
+      saveUserCode(problem.id, skeleton);
+    }
 
     setTerminalOutput(`$ javac ${problem.id}.java\n[Ready to compile. Type your Java solution on the left, adjust inputs if needed, and click 'Compile & Run Java Code']`);
     setQuizSelectedOption(null);
@@ -392,6 +402,7 @@ export default function CodingWorkspace({
                   onClick={() => {
                     const skeleton = getSkeletonCode(problem);
                     setUserCode(skeleton);
+                    saveUserCode(problem.id, skeleton);
                     setTerminalOutput(`$ javac ${problem.id}.java\n[Code reset to starter template. Ready to compile!]`);
                   }}
                   className="text-[10px] font-black uppercase tracking-widest text-indigo-700 hover:text-indigo-800 bg-indigo-50 border border-indigo-150 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
@@ -410,7 +421,11 @@ export default function CodingWorkspace({
                 </div>
                 <textarea
                   value={userCode}
-                  onChange={(e) => setUserCode(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setUserCode(val);
+                    saveUserCode(problem.id, val);
+                  }}
                   className="flex-1 w-full p-4 font-mono text-xs text-slate-100 bg-slate-950 border-0 outline-none focus:ring-0 resize-none select-text whitespace-pre overflow-auto font-semibold leading-relaxed leading-6 h-full"
                   spellCheck="false"
                   id="code-editor-textarea"

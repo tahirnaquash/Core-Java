@@ -52,6 +52,15 @@ export default function App() {
     }
   });
 
+  const [userCodes, setUserCodes] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem("hkbk_java_user_codes");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
   const [streak, setStreak] = useState<number>(() => {
     try {
       const saved = localStorage.getItem("hkbk_java_streak");
@@ -74,6 +83,19 @@ export default function App() {
     } catch {}
   }, [completedQuizzes]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem("hkbk_java_user_codes", JSON.stringify(userCodes));
+    } catch {}
+  }, [userCodes]);
+
+  const saveUserCode = (problemId: string, code: string) => {
+    setUserCodes((prev) => {
+      const updated = { ...prev, [problemId]: code };
+      return updated;
+    });
+  };
+
   // Sync progress to the server-side Excel sheet automatically
   useEffect(() => {
     if (!studentUsn || !studentName) return;
@@ -91,6 +113,7 @@ export default function App() {
             streak,
             completedProblems,
             completedQuizzes,
+            userCodes,
             certificateEarned: completedProblems.length === 30 && Object.keys(completedQuizzes).length === 10
           }),
         });
@@ -105,7 +128,7 @@ export default function App() {
     // Debounce to prevent rapid, successive writes to the Excel file
     const timer = setTimeout(syncProgress, 600);
     return () => clearTimeout(timer);
-  }, [completedProblems, completedQuizzes, streak, studentUsn, studentName]);
+  }, [completedProblems, completedQuizzes, streak, studentUsn, studentName, userCodes]);
 
   // Handle study streak update on load
   useEffect(() => {
@@ -177,18 +200,22 @@ export default function App() {
     streak: number;
     completedProblems: string[];
     completedQuizzes: Record<string, number>;
+    userCodes?: Record<string, string>;
   }) => {
     setStudentName(data.name);
     setStudentUsn(data.usn);
     setStreak(data.streak);
     setCompletedProblems(data.completedProblems);
     setCompletedQuizzes(data.completedQuizzes);
+    const codes = data.userCodes || {};
+    setUserCodes(codes);
 
     try {
       localStorage.setItem("hkbk_student_name", data.name);
       localStorage.setItem("hkbk_student_usn", data.usn);
       localStorage.setItem("hkbk_java_completed_problems", JSON.stringify(data.completedProblems));
       localStorage.setItem("hkbk_java_completed_quizzes", JSON.stringify(data.completedQuizzes));
+      localStorage.setItem("hkbk_java_user_codes", JSON.stringify(codes));
       localStorage.setItem("hkbk_java_streak", String(data.streak));
     } catch {}
   };
@@ -198,6 +225,7 @@ export default function App() {
     setStudentUsn(null);
     setCompletedProblems([]);
     setCompletedQuizzes({});
+    setUserCodes({});
     setStreak(1);
 
     try {
@@ -205,6 +233,7 @@ export default function App() {
       localStorage.removeItem("hkbk_student_usn");
       localStorage.removeItem("hkbk_java_completed_problems");
       localStorage.removeItem("hkbk_java_completed_quizzes");
+      localStorage.removeItem("hkbk_java_user_codes");
       localStorage.removeItem("hkbk_java_streak");
       localStorage.removeItem("hkbk_java_last_study_date");
     } catch {}
@@ -252,6 +281,8 @@ export default function App() {
             setSelectedSessionNum={setSelectedSessionNum}
             completedProblems={completedProblems}
             toggleCompleted={toggleProblemCompleted}
+            userCodes={userCodes}
+            saveUserCode={saveUserCode}
           />
         )}
 

@@ -13,6 +13,8 @@ interface SessionViewProps {
   setSelectedSessionNum: (num: number) => void;
   completedProblems: string[];
   toggleCompleted: (id: string) => void;
+  userCodes: Record<string, string>;
+  saveUserCode: (id: string, code: string) => void;
 }
 
 export default function SessionView({
@@ -20,6 +22,8 @@ export default function SessionView({
   setSelectedSessionNum,
   completedProblems,
   toggleCompleted,
+  userCodes,
+  saveUserCode,
 }: SessionViewProps) {
   const currentSession = JAVA_SESSIONS.find((s) => s.num === selectedSessionNum) || JAVA_SESSIONS[0];
   const [activeProblemId, setActiveProblemId] = useState<string | null>(null);
@@ -192,6 +196,8 @@ export default function SessionView({
             toggleCompleted={toggleCompleted}
             onNext={handleNextProblem}
             onPrev={handlePrevProblem}
+            userCodes={userCodes}
+            saveUserCode={saveUserCode}
           />
         </div>
       </div>
