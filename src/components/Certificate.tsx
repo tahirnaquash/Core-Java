@@ -219,22 +219,22 @@ export default function Certificate({
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = "#064e3b";
     ctx.beginPath();
-    ctx.moveTo(canvas.width - 380, 935);
-    ctx.lineTo(canvas.width - 120, 935);
+    ctx.moveTo(canvas.width - 430, 935);
+    ctx.lineTo(canvas.width - 110, 935);
     ctx.stroke();
 
     // Elegant signature text/font-drawing
     ctx.fillStyle = "#1d4ed8"; // classic blue ink color for signature
-    ctx.font = "italic bold 28px Georgia, serif";
-    ctx.fillText("Dr. Tahir Ahmed", canvas.width - 250, 915);
+    ctx.font = "italic bold 24px Georgia, serif";
+    ctx.fillText("Prof. Tahir Naquash H B", canvas.width - 270, 915);
 
     ctx.fillStyle = "#064e3b"; // emerald-950
     ctx.font = "bold 16px 'Helvetica Neue', Arial, sans-serif";
-    ctx.fillText("Head of Department, CSE", canvas.width - 250, 960);
+    ctx.fillText("Assistant Professor, CSE", canvas.width - 270, 960);
 
     ctx.fillStyle = "#047857"; // emerald-700
     ctx.font = "bold 12px 'Helvetica Neue', Arial, sans-serif";
-    ctx.fillText("HKBK CSE BOARD OF EXCELLENCE", canvas.width - 250, 985);
+    ctx.fillText("HKBK CSE BOARD OF EXCELLENCE", canvas.width - 270, 985);
 
     // Save and download the image
     try {
@@ -458,11 +458,16 @@ export default function Certificate({
               </div>
 
               {/* Authority Stamps */}
-              <div className="border-t border-emerald-900/40 pt-2 px-6 text-center font-sans space-y-0.5">
-                <span className="text-xs font-bold text-emerald-950 block">Head of Department, CSE</span>
-                <span className="text-[10px] text-emerald-800 block uppercase tracking-widest font-semibold">
-                  HKBK CSE Board of Excellence
+              <div className="text-center font-sans space-y-1">
+                <span className="font-serif italic font-bold text-base text-blue-700 block px-4 pb-1">
+                  Prof. Tahir Naquash H B
                 </span>
+                <div className="border-t border-emerald-900/40 pt-2 px-6 space-y-0.5">
+                  <span className="text-xs font-bold text-emerald-950 block">Assistant Professor, CSE</span>
+                  <span className="text-[10px] text-emerald-800 block uppercase tracking-widest font-semibold">
+                    HKBK CSE Board of Excellence
+                  </span>
+                </div>
               </div>
             </div>
 
